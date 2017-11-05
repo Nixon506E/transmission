@@ -100,13 +100,105 @@ div#toolbar {
   div#toolbar > div#toolbar-start-all {
     background-image: url("images/toolbar-start-all.png"); }
   div#toolbar > div#toolbar-pause-all {
-    background-image: url("images/toolbar-pause-all.png"); }
+    background-image: url("images/toolbar-pause-all.png"); }    
+  div#toolbar > div#toolbar-set-group {
+    background-image: url('images/toolbar-group.png'); }
   div#toolbar > div#toolbar-inspector {
     background-image: url("images/toolbar-info.png");
     float: right;
     margin-right: 4px; }
   div#toolbar > *.disabled {
     opacity: 0.25; }
+
+  .prefs-section .row .value.colors {
+    margin-left: 0; }
+
+
+  .color-row {
+    overflow: hidden;
+    white-space: nowrap;
+    border: 1px solid transparent;
+    border-radius: 4px;
+    margin-bottom: 1px;
+    padding: 0 0 1px 1px; }
+  .color-row.error{
+    border-color: rgba(250, 0, 0, .75);
+    background-color: rgba(250, 0, 0, .15); }
+  .color-row .controls {
+    position:relative;
+    top: 5px; }
+  .color-row .controls .ui-icon {
+    display: inline-block;
+    border-radius:4px;
+    margin-left:3px;
+    cursor:pointer; }
+  .color-row .controls .ui-icon.disabled {
+    visibility:hidden; }
+  .color-row .controls .ui-icon:hover {
+    background-color: rgba(120, 120, 120, .5); }
+  .color-row input {
+    min-width:80px; width: 30%; } /* should be 30% if code column is displayed */
+  .color-row.removed {
+    opacity: 0.5; }
+  #prefs-page-groups .message {
+    clear: both;
+    color: red; }
+
+#inspector-page-info .row .groupwrap {
+  display: inline-block;
+  overflow: hidden;
+  white-space:nowrap; }
+#inspector-page-info .row .group {
+  display: inline-block;
+  border: 1px solid rgba(0, 0, 0, 0.2);
+  border-radius: 3px;
+  padding: 0 4px; }
+#inspector-page-info .row .group:not(:first-child) {
+  margin-left: 10px; }
+
+
+/*--------------------------------------
+ *
+ * ColorPicker (http://www.laktek.com/2008/10/27/really-simple-color-picker-in-jquery/)
+ *
+ *--------------------------------------*/
+div.colorPicker-picker {
+  width: 16px;
+  height: 16px;
+  padding: 0 !important;
+  border: 1px solid grey;
+  background: url(images/picker-arrow.png) no-repeat top right;
+  cursor: pointer;
+  font-weight:bold;
+  text-align: center;
+  display: inline-block;
+  position:relative;
+  top:-2px;
+  margin: 0 4px;
+}
+
+div.colorPicker-palette {
+  width: 110px;
+  position: absolute;
+  border: 1px solid grey;
+  background-color: white;
+  padding: 2px;
+  z-index: 9999;
+  box-shadow: black 4px 4px 12px;
+}
+div.colorPicker_hexWrap {width: 100%; float:left }
+div.colorPicker_hexWrap label {font-size: 95%; color: #2F2F2F; margin: 5px 2px; width: 25%}
+div.colorPicker_hexWrap input {margin: 5px 2px; padding: 0; font-size: 95%; border: 1px solid #000; width: 65%; }
+div.colorPicker-swatch {
+  height: 12px;
+  width: 12px;
+  border: 1px solid #000;
+  margin: 2px;
+  float: left;
+  cursor: pointer;
+  line-height: 12px;
+}
+
 
 /***
 ****
@@ -237,19 +329,31 @@ ul.torrent_list {
       white-space: nowrap;
       color: #222;
       margin-top: 2px;
-      margin-bottom: 2px; }
+      margin-bottom: 2px;
+      margin-left: 26px;}
       ul.torrent_list li.torrent div.torrent_name.compact {
         font-size: 1.0em;
         font-weight: normal; }
       ul.torrent_list li.torrent div.torrent_name.paused {
         font-weight: normal;
         color: #777; }
+
+  ul.torrent_list li.torrent div.torrent_group {
+    height: 58px;
+    float: left;
+    width: 16px;
+    border: 1px solid rgba(0, 0, 0, 0.2);
+    border-radius: 3px;
+    margin-top: 2px;
+  }
     ul.torrent_list li.torrent div.torrent_progress_details,
     ul.torrent_list li.torrent div.torrent_peer_details {
-      clear: left;
+      clear: none;
       overflow: hidden;
       text-overflow: ellipsis;
-      white-space: nowrap; }
+      white-space: nowrap;
+      margin-left: 26px;
+    }
     ul.torrent_list li.torrent div.torrent_progress_details.error,
     ul.torrent_list li.torrent div.torrent_peer_details.error {
       color: #F00; }
@@ -266,7 +370,8 @@ ul.torrent_list {
       /*float: right;*/ }
     ul.torrent_list div.torrent_progress_bar_container.full {
       margin-top: 2px;
-      margin-bottom: 5px; }
+      margin-bottom: 5px;
+      margin-left: 26px;}
   ul.torrent_list div.torrent_peer_details.compact {
     margin-top: 2px;
     margin-right: 65px;

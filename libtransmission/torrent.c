@@ -929,6 +929,7 @@ static void torrentInit(tr_torrent* tor, tr_ctor const* ctor)
     bool doStart;
     uint64_t loaded;
     char const* dir;
+    char const* group;
     bool isNewTorrent;
     static int nextUniqueId = 1;
 
@@ -952,6 +953,11 @@ static void torrentInit(tr_torrent* tor, tr_ctor const* ctor)
     if (tr_sessionIsIncompleteDirEnabled(session))
     {
         tor->incompleteDir = tr_strdup(dir);
+    }
+
+    if (tr_ctorGetDownloadGroup(ctor, TR_FORCE, &group) || tr_ctorGetDownloadGroup(ctor, TR_FALLBACK, &group))
+    {
+        tor->downloadGroup = tr_strdup(group);
     }
 
     tr_bandwidthConstruct(&tor->bandwidth, session, &session->bandwidth);
@@ -1179,6 +1185,26 @@ tr_torrent* tr_torrentNew(tr_ctor const* ctor, int* setme_error, int* setme_dupl
 /**
 ***
 **/
+
+void tr_torrentSetDownloadGroup(tr_torrent* tor, char const* group)
+{
+    TR_ASSERT(tr_isTorrent(tor));
+
+    if (group == NULL || tor->downloadGroup == NULL || strcmp(group, tor->downloadGroup) != 0)
+    {
+        tr_free(tor->downloadGroup);
+        tor->downloadGroup = tr_strdup(group);
+        tor->anyDate = tr_time();
+        tr_torrentSetDirty(tor);
+    }
+}
+
+char const* tr_torrentGetDownloadGroup(tr_torrent const* tor)
+{
+    TR_ASSERT(tr_isTorrent(tor));
+
+    return tor->downloadGroup;
+}
 
 void tr_torrentSetDownloadDir(tr_torrent* tor, char const* path)
 {
@@ -1701,6 +1727,7 @@ static void freeTorrent(tr_torrent* tor)
     tr_cpDestruct(&tor->completion);
 
     tr_free(tor->downloadDir);
+    tr_free(tor->downloadGroup);
     tr_free(tor->incompleteDir);
 
     if (tor == session->torrentList)
@@ -2255,6 +2282,7 @@ static void torrentCallScript(tr_torrent const* tor, char const* script)
             tr_strdup_printf("TR_APP_VERSION=%s", SHORT_VERSION_STRING),
             tr_strdup_printf("TR_TIME_LOCALTIME=%s", timeStr),
             tr_strdup_printf("TR_TORRENT_DIR=%s", tor->currentDir),
+            tr_strdup_printf("TR_TORRENT_GROUP=%s", tr_torrentGetDownloadGroup(tor)),
             tr_strdup_printf("TR_TORRENT_HASH=%s", tor->info.hashString),
             tr_strdup_printf("TR_TORRENT_ID=%d", tr_torrentId(tor)),
             tr_strdup_printf("TR_TORRENT_NAME=%s", tr_torrentName(tor)),
